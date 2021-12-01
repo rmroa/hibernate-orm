@@ -1,10 +1,13 @@
 package com.rm.entity;
 
 import com.rm.converter.BirthdayConverter;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -23,6 +26,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Builder
 @Entity
 @Table(name = "users")
+@TypeDef(name = "rm", typeClass = JsonBinaryType.class)
 public class User {
 
     @Id
@@ -49,6 +53,11 @@ public class User {
     private String email;
 
     private String password;
+
+    @Type(type = "rm")
+//    @Type(type = "com.vladmihalcea.hibernate.type.json.JsonBinaryType")
+    // можем использовать "jsonb" т.к. метод JsonBinaryType getName() возвращает "jsonb"
+    private String info;
 
     @Enumerated(EnumType.STRING)
     private Role role;

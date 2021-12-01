@@ -4,6 +4,7 @@ import com.rm.entity.Birthday;
 import com.rm.entity.Gender;
 import com.rm.entity.Role;
 import com.rm.entity.User;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -27,6 +28,7 @@ public class HibernateRunner {
 //        configuration.addAnnotatedClass(User.class); // аналог <mapping class="com.rm.entity.User"/>
 //        configuration.setPhysicalNamingStrategy(new CamelCaseToUnderscoresNamingStrategy()); // аналог @Column(name = "...")
 //        configuration.addAttributeConverter(new BirthdayConverter(), true); // аналог @Convert(converter = BirthdayConverter.class)
+        configuration.registerTypeOverride(new JsonBinaryType()); // регистрация JsonBinaryType для поля "private String info";
         configuration.configure();
 
         try (SessionFactory sessionFactory = configuration.buildSessionFactory();
@@ -43,6 +45,10 @@ public class HibernateRunner {
                     .phone("375292901210")
                     .email("firstname@mail.ru")
                     .password("password")
+                    .info("{\n" +
+                            "      \"name\": \"FirstName\",\n" +
+                            "      \"id\": 25\n" +
+                            "    }")
                     .role(Role.CUSTOMER)
                     .gender(Gender.MALE)
                     .build();
