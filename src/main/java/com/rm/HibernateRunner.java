@@ -1,5 +1,6 @@
 package com.rm;
 
+import com.rm.entity.Birthday;
 import com.rm.entity.Gender;
 import com.rm.entity.Role;
 import com.rm.entity.User;
@@ -25,6 +26,7 @@ public class HibernateRunner {
         Configuration configuration = new Configuration();
 //        configuration.addAnnotatedClass(User.class); // аналог <mapping class="com.rm.entity.User"/>
 //        configuration.setPhysicalNamingStrategy(new CamelCaseToUnderscoresNamingStrategy()); // аналог @Column(name = "...")
+//        configuration.addAttributeConverter(new BirthdayConverter(), true); // аналог @Convert(converter = BirthdayConverter.class)
         configuration.configure();
 
         try (SessionFactory sessionFactory = configuration.buildSessionFactory();
@@ -34,15 +36,15 @@ public class HibernateRunner {
             User user = User.builder()
                     .firstName("FirstName")
                     .lastName("LastName")
-                    .birthday(LocalDate.of(2000, 1, 20))
+                    .birthday(new Birthday(LocalDate.of(2000, 1, 20)))
                     .image("")
                     .country("Belarus")
                     .city("Brest")
-                    .phone("+375292901210")
+                    .phone("375292901210")
                     .email("firstname@mail.ru")
                     .password("password")
-                    .role(Role.valueOf("USER"))
-                    .gender(Gender.valueOf("MALE"))
+                    .role(Role.CUSTOMER)
+                    .gender(Gender.MALE)
                     .build();
             session.save(user);
 

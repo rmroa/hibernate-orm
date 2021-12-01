@@ -1,5 +1,6 @@
 package com.rm;
 
+import com.rm.entity.Birthday;
 import com.rm.entity.Gender;
 import com.rm.entity.Role;
 import com.rm.entity.User;
@@ -25,11 +26,11 @@ class HibernateRunnerTest {
         User user = User.builder()
                 .firstName("FirstName")
                 .lastName("LastName")
-                .birthday(LocalDate.of(2000, 1, 20))
+                .birthday(new Birthday(LocalDate.of(2000, 1, 20)))
                 .image("")
                 .country("Belarus")
                 .city("Brest")
-                .phone("+375292901210")
+                .phone("375292901210")
                 .email("firstname@mail.ru")
                 .password("password")
                 .role(Role.valueOf("USER"))
