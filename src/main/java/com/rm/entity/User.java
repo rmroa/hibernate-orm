@@ -1,24 +1,18 @@
 package com.rm.entity;
 
 import com.rm.converter.BirthdayConverter;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import static javax.persistence.GenerationType.IDENTITY;
 
 @Data
 @NoArgsConstructor
@@ -26,11 +20,11 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Builder
 @Entity
 @Table(name = "users")
-@TypeDef(name = "rm", typeClass = JsonBinaryType.class)
+//@TypeDef(name = "rm", typeClass = JsonBinaryType.class)
 public class User {
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
+//    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @Column(name = "first_name")
@@ -54,10 +48,10 @@ public class User {
 
     private String password;
 
-    @Type(type = "rm")
+//    @Type(type = "rm")
 //    @Type(type = "com.vladmihalcea.hibernate.type.json.JsonBinaryType")
     // можем использовать "jsonb" т.к. метод JsonBinaryType getName() возвращает "jsonb"
-    private String info;
+//    private String info;
 
     @Enumerated(EnumType.STRING)
     private Role role;
