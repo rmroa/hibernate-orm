@@ -50,6 +50,14 @@ public class HibernateRunner {
 //                    .build();
 //            session.saveOrUpdate(user);
             User userOne = session.get(User.class, 1L);
+            userOne.setFirstName("NameFirst");
+
+//            session.flush();
+
+//            как мы можем удалить сущность из кеша
+//            session.evict(userOne);
+//            session.clear();
+//            session.close();
 
             session.getTransaction().commit();
         }
