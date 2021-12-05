@@ -7,11 +7,16 @@ import com.rm.entity.User;
 import com.rm.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class HibernateRunner {
+
+    private static final Logger log = LoggerFactory.getLogger(HibernateRunner.class);
 
     public static void main(String[] args) throws SQLException {
 
@@ -33,34 +38,23 @@ public class HibernateRunner {
                 .role(Role.CUSTOMER)
                 .gender(Gender.MALE)
                 .build();
+        log.info("User entity is in transient state, object: {}", user);
 
-        try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
-             Session sessionOne = sessionFactory.openSession()) {
-            sessionOne.beginTransaction();
+        try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory()) {
+            Session sessionOne = sessionFactory.openSession();
+            try (sessionOne) {
+                Transaction transaction = sessionOne.beginTransaction();
+                log.trace("Transaction is created, {}", transaction);
 
-            sessionOne.saveOrUpdate(user);
+                sessionOne.saveOrUpdate(user);
+                log.trace("User is in transient state: {}, session {}", user, sessionOne);
 
-            sessionOne.getTransaction().commit();
-        }
-
-        try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
-             Session sessionTwo = sessionFactory.openSession()) {
-            sessionTwo.beginTransaction();
-            user.setFirstName("SetFirstName");
-
-//            sessionTwo.delete(user);
-
-//            sessionTwo.refresh(user);
-//            User freshUserOne = sessionTwo.get(User.class, user.getId());
-//            user.setFirstName(freshUserOne.getFirstName());
-//            user.setLastName(freshUserOne.getLastName());
-
-            sessionTwo.merge(user);
-            User freshUserTwo = sessionTwo.get(User.class, user.getId());
-            freshUserTwo.setFirstName(user.getFirstName());
-            freshUserTwo.setLastName(user.getLastName());
-
-            sessionTwo.getTransaction().commit();
+                sessionOne.getTransaction().commit();
+            }
+            log.warn("User is in detached state: {}, session is closed {}", user, sessionOne);
+        } catch (Exception exception) {
+            log.error("Exception occurred", exception);
+            throw exception;
         }
     }
 }
