@@ -1,13 +1,13 @@
 package com.rm.entity;
 
-import com.rm.converter.BirthdayConverter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
-import javax.persistence.Convert;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -27,26 +27,10 @@ public class User {
 //    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @Column(name = "first_name")
-    private String firstName;
-
-    @Column(name = "last_name")
-    private String lastName;
-
-    @Convert(converter = BirthdayConverter.class)
-    private Birthday birthday;
-
-    private String image;
-
-    private String country;
-
-    private String city;
-
-    private String phone;
-
-    private String email;
-
-    private String password;
+    @Embedded
+    @AttributeOverride(name = "firstName", column = @Column(name = "first_name"))
+    @AttributeOverride(name = "lastName", column = @Column(name = "last_name"))
+    private PersonalInfo personalInfo;
 
 //    @Type(type = "rm")
 //    @Type(type = "com.vladmihalcea.hibernate.type.json.JsonBinaryType")
@@ -56,6 +40,5 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
+
 }

@@ -2,41 +2,42 @@ package com.rm;
 
 import com.rm.entity.Birthday;
 import com.rm.entity.Gender;
+import com.rm.entity.PersonalInfo;
 import com.rm.entity.Role;
 import com.rm.entity.User;
 import com.rm.util.HibernateUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
 
+@Slf4j
 public class HibernateRunner {
-
-    private static final Logger log = LoggerFactory.getLogger(HibernateRunner.class);
 
     public static void main(String[] args) throws SQLException {
 
         User user = User.builder()
-                .id(20L)
-                .firstName("FirtName")
-                .lastName("LastName")
-                .birthday(new Birthday(LocalDate.of(2000, 1, 20)))
-                .image("")
-                .country("Belarus")
-                .city("Brest")
-                .phone("375292901210")
-                .email("firstname@mail.ru")
-                .password("password")
+                .id(21L)
+                .personalInfo(PersonalInfo.builder()
+                        .firstName("FirstName")
+                        .lastName("LastName")
+                        .birthday(new Birthday(LocalDate.of(2000, 1, 20)))
+                        .image("")
+                        .country("Belarus")
+                        .city("Brest")
+                        .phone("375292901210")
+                        .email("firstname@mail.ru")
+                        .password("password")
+                        .gender(Gender.MALE)
+                        .build())
 //                    .info("{\n" +
 //                            "      \"name\": \"FirstName\",\n" +
 //                            "      \"id\": 25\n" +
 //                            "    }")
                 .role(Role.CUSTOMER)
-                .gender(Gender.MALE)
                 .build();
         log.info("User entity is in transient state, object: {}", user);
 
@@ -47,7 +48,7 @@ public class HibernateRunner {
                 log.trace("Transaction is created, {}", transaction);
 
                 sessionOne.saveOrUpdate(user);
-                log.trace("User is in transient state: {}, session {}", user, sessionOne);
+                log.trace("User is in persistent state: {}, session {}", user, sessionOne);
 
                 sessionOne.getTransaction().commit();
             }
