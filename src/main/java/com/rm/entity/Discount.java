@@ -9,8 +9,6 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -22,18 +20,16 @@ import static javax.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "discount")
+public class Discount {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Embedded
-    @AttributeOverride(name = "firstName", column = @Column(name = "first_name"))
-    @AttributeOverride(name = "lastName", column = @Column(name = "last_name"))
-    private PersonalInfo personalInfo;
-
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @AttributeOverride(name = "amountOfDiscount", column = @Column(name = "amount_of_discount"))
+    @AttributeOverride(name = "startDate", column = @Column(name = "start_date"))
+    @AttributeOverride(name = "endDate", column = @Column(name = "end_date"))
+    private DiscountInfo discountInfo;
 }

@@ -13,6 +13,11 @@
         <property name="format_sql">true</property>
 
         <mapping class="com.rm.entity.User"/>
+        <mapping class="com.rm.entity.Order"/>
+        <mapping class="com.rm.entity.Manufacturer"/>
+        <mapping class="com.rm.entity.VehicleType"/>
+        <mapping class="com.rm.entity.Model"/>
+        <mapping class="com.rm.entity.Discount"/>
         <!-- DB schema will be updated if needed -->
         <!-- <property name="hibernate.hbm2ddl.auto">update</property> -->
     </session-factory>

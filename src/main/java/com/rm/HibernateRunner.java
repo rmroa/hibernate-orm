@@ -1,26 +1,37 @@
 package com.rm;
 
 import com.rm.entity.Birthday;
+import com.rm.entity.Discount;
+import com.rm.entity.DiscountInfo;
+import com.rm.entity.DriveUnit;
+import com.rm.entity.EngineType;
 import com.rm.entity.Gender;
+import com.rm.entity.Manufacturer;
+import com.rm.entity.Model;
+import com.rm.entity.Order;
 import com.rm.entity.PersonalInfo;
 import com.rm.entity.Role;
+import com.rm.entity.Transmission;
 import com.rm.entity.User;
+import com.rm.entity.VehicleType;
 import com.rm.util.HibernateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Slf4j
 public class HibernateRunner {
 
     public static void main(String[] args) throws SQLException {
 
+
         User user = User.builder()
-                .id(21L)
                 .personalInfo(PersonalInfo.builder()
                         .firstName("FirstName")
                         .lastName("LastName")
@@ -33,29 +44,60 @@ public class HibernateRunner {
                         .password("password")
                         .gender(Gender.MALE)
                         .build())
-//                    .info("{\n" +
-//                            "      \"name\": \"FirstName\",\n" +
-//                            "      \"id\": 25\n" +
-//                            "    }")
                 .role(Role.CUSTOMER)
                 .build();
-        log.info("User entity is in transient state, object: {}", user);
+
+        Manufacturer manufacturer = Manufacturer.builder()
+                .brand("SaveBrand")
+                .country("SaveCountry")
+                .build();
+
+        VehicleType vehicleType = VehicleType.builder()
+                .type("SaveType")
+                .build();
+
+        Model model = Model.builder()
+                .model("SaveModel")
+                .manufacturer(manufacturer)
+                .productionYear(LocalDate.of(1990, 10, 13))
+                .vehicleType(vehicleType)
+                .transmission(Transmission.MANUAL)
+                .driveUnit(DriveUnit.FRONT)
+                .engineType(EngineType.DIESEL)
+                .currentMileage(100L)
+                .price(new BigDecimal("77.700"))
+                .build();
+
+        Discount discount = Discount.builder()
+                .discountInfo(DiscountInfo.builder()
+                        .amountOfDiscount(19L)
+                        .startDate(LocalDate.of(2021, 12, 20))
+                        .endDate(LocalDate.of(2021, 12, 29))
+                        .build())
+                .build();
+
+        Order order = Order.builder()
+                .user(user)
+                .model(model)
+                .discount(discount)
+                .date(LocalDateTime.now())
+                .cost(new BigDecimal("62.937"))
+                .build();
 
         try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory()) {
             Session sessionOne = sessionFactory.openSession();
             try (sessionOne) {
                 Transaction transaction = sessionOne.beginTransaction();
-                log.trace("Transaction is created, {}", transaction);
 
-                sessionOne.saveOrUpdate(user);
-                log.trace("User is in persistent state: {}, session {}", user, sessionOne);
+                sessionOne.save(user);
+                sessionOne.save(manufacturer);
+                sessionOne.save(vehicleType);
+                sessionOne.save(model);
+                sessionOne.save(discount);
+                sessionOne.save(order);
 
                 sessionOne.getTransaction().commit();
             }
-            log.warn("User is in detached state: {}, session is closed {}", user, sessionOne);
-        } catch (Exception exception) {
-            log.error("Exception occurred", exception);
-            throw exception;
         }
     }
 }
