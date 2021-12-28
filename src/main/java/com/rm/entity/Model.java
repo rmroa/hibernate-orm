@@ -13,7 +13,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -34,14 +33,14 @@ public class Model {
 
     private String model;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "manufacturer_id")
     private Manufacturer manufacturer;
 
     @Column(name = "production_year")
     private LocalDate productionYear;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "vehicle_type_id")
     private VehicleType vehicleType;
 
