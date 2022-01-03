@@ -16,7 +16,6 @@ import com.rm.entity.User;
 import com.rm.entity.VehicleType;
 import com.rm.util.HibernateUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -24,6 +23,7 @@ import org.hibernate.Transaction;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Slf4j
 public class HibernateRunner {
@@ -55,6 +55,14 @@ public class HibernateRunner {
                 .type("SaveType")
                 .build();
 
+        Discount discount = Discount.builder()
+                .discountInfo(DiscountInfo.builder()
+                        .amountOfDiscount(19L)
+                        .startDate(LocalDate.of(2021, 12, 20))
+                        .endDate(LocalDate.of(2021, 12, 29))
+                        .build())
+                .build();
+
         Model model = Model.builder()
                 .model("SaveModel")
                 .manufacturer(manufacturer)
@@ -65,41 +73,22 @@ public class HibernateRunner {
                 .engineType(EngineType.DIESEL)
                 .currentMileage(100L)
                 .price(new BigDecimal("77.700"))
+                .discount(discount)
                 .build();
 
-        Discount discount = Discount.builder()
-                .discountInfo(DiscountInfo.builder()
-                        .amountOfDiscount(19L)
-                        .startDate(LocalDate.of(2021, 12, 20))
-                        .endDate(LocalDate.of(2021, 12, 29))
-                        .build())
+
+        Order order = Order.builder()
+                .user(user)
+                .model(model)
+                .date(LocalDateTime.now())
+                .cost(new BigDecimal("62.937"))
                 .build();
 
-//        Order order = Order.builder()
-//                .user(user)
-//                .model(model)
-//                .discount(discount)
-//                .date(LocalDateTime.now())
-//                .cost(new BigDecimal("62.937"))
-//                .build();
 
         try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory()) {
             Session sessionOne = sessionFactory.openSession();
             try (sessionOne) {
                 Transaction transaction = sessionOne.beginTransaction();
-
-                Order order2 = sessionOne.get(Order.class, 1);
-                User user1 = order2.getUser();
-//                Long id = user1.getId();
-                String firstName = user1.getPersonalInfo().getFirstName();
-
-//                sessionOne.save(user);
-//                sessionOne.save(manufacturer);
-//                sessionOne.save(vehicleType);
-//                sessionOne.save(model);
-//                sessionOne.save(discount);
-//                sessionOne.save(order);
-                Object object = Hibernate.unproxy(user1);
 
                 sessionOne.getTransaction().commit();
             }

@@ -1,100 +1,210 @@
 package com.rm;
 
 import com.rm.entity.Birthday;
+import com.rm.entity.Discount;
+import com.rm.entity.DiscountInfo;
+import com.rm.entity.DriveUnit;
+import com.rm.entity.EngineType;
 import com.rm.entity.Gender;
+import com.rm.entity.Manufacturer;
+import com.rm.entity.Model;
+import com.rm.entity.Order;
+import com.rm.entity.PersonalInfo;
 import com.rm.entity.Role;
+import com.rm.entity.Transmission;
 import com.rm.entity.User;
+import com.rm.entity.VehicleType;
+import com.rm.util.HibernateUtil;
+import lombok.Cleanup;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 
-import javax.persistence.Column;
-import javax.persistence.Table;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Arrays;
-
-import static java.lang.String.format;
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.joining;
+import java.time.LocalDateTime;
+import java.util.Set;
 
 class HibernateRunnerTest {
 
     @Test
-    void checkGetReflectionApi() throws SQLException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchFieldException {
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = preparedStatement.executeQuery();
-        resultSet.getLong("id");
-        resultSet.getString("first_name");
-        resultSet.getString("last_name");
-        resultSet.getDate("birthday").toLocalDate();
-        resultSet.getString("image");
-        resultSet.getString("country");
-        resultSet.getString("city");
-        resultSet.getString("phone");
-        resultSet.getString("email");
-        resultSet.getString("password");
-        Role.valueOf(resultSet.getString("role"));
-        Gender.valueOf(resultSet.getString("gender"));
+    void checkOrphanRemoval() {
+        try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+             Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
 
-        Class<User> clazz = User.class;
+            User user = session.get(User.class, 1L);
+            user.getOrders().removeIf(order -> order.getId().equals(1));
 
-        Constructor<User> constructor = clazz.getConstructor();
-        User user = constructor.newInstance();
-        Field firstNameField = clazz.getDeclaredField("firstName");
-        firstNameField.setAccessible(true);
-        firstNameField.set(user, resultSet.getString("first_name"));
+            session.getTransaction().commit();
+        }
     }
 
     @Test
-    void checkReflectionApi() throws SQLException, IllegalAccessException {
+    void checkLazyInitialization() {
+        User user = null;
+        try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+             Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            user = session.get(User.class, 1L);
+            System.out.println("");
+
+            session.getTransaction().commit();
+        }
+        Set<Order> orders = user.getOrders();
+        System.out.println(orders.size());
+    }
+
+    @Test
+    void addOrderToNewUser() {
+        @Cleanup SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
         User user = User.builder()
-                .firstName("FirstName")
-                .lastName("LastName")
-                .birthday(new Birthday(LocalDate.of(2000, 1, 20)))
-                .image("")
-                .country("Belarus")
-                .city("Brest")
-                .phone("375292901210")
-                .email("firstname@mail.ru")
-                .password("password")
-                .role(Role.valueOf("USER"))
-                .gender(Gender.valueOf("MALE"))
+                .personalInfo(PersonalInfo.builder()
+                        .firstName("NewName")
+                        .lastName("NewLastName")
+                        .birthday(new Birthday(LocalDate.of(2000, 1, 20)))
+                        .image("")
+                        .country("Belarus")
+                        .city("Brest")
+                        .phone("375297456312")
+                        .email("newname@mail.ru")
+                        .password("password")
+                        .gender(Gender.MALE)
+                        .build())
+                .role(Role.CUSTOMER)
                 .build();
 
-        String sql = "" +
-                "INSERT INTO " +
-                "%s " +
-                "(%s) " +
-                "VALUES (%s)";
+        Manufacturer manufacturer = Manufacturer.builder()
+                .brand("NewBrand")
+                .country("NewCountry")
+                .build();
 
-        String tableName = ofNullable(user.getClass().getAnnotation(Table.class))
-                .map(tableAnnotation -> tableAnnotation.schema() + "." + tableAnnotation.name())
-                .orElse(user.getClass().getName());
+        VehicleType vehicleType = VehicleType.builder()
+                .type("NewType")
+                .build();
 
-        Field[] declaredFields = user.getClass().getDeclaredFields();
+        Discount discount = Discount.builder()
+                .discountInfo(DiscountInfo.builder()
+                        .amountOfDiscount(19L)
+                        .startDate(LocalDate.of(2021, 12, 20))
+                        .endDate(LocalDate.of(2021, 12, 29))
+                        .build())
+                .build();
 
-        String columnsNames = Arrays.stream(declaredFields)
-                .map(field -> ofNullable(field.getAnnotation(Column.class))
-                        .map(Column::name)
-                        .orElse(field.getName()))
-                .collect(joining(", "));
+        Model model = Model.builder()
+                .model("NewModel")
+                .manufacturer(manufacturer)
+                .productionYear(LocalDate.of(1990, 10, 13))
+                .vehicleType(vehicleType)
+                .transmission(Transmission.MANUAL)
+                .driveUnit(DriveUnit.FRONT)
+                .engineType(EngineType.DIESEL)
+                .currentMileage(100L)
+                .price(new BigDecimal("77.700"))
+                .discount(discount)
+                .build();
 
-        String columnValues = Arrays.stream(declaredFields)
-                .map(field -> "?")
-                .collect(joining(", "));
+        Order order = Order.builder()
+                .user(user)
+                .model(model)
+                .date(LocalDateTime.now())
+                .cost(new BigDecimal("62.937"))
+                .build();
 
-        System.out.println(format(sql, tableName, columnsNames, columnValues));
+        vehicleType.addModel(model);
 
-        Connection connection = null;
-        PreparedStatement preparedStatement = connection.prepareStatement(format(sql, tableName, columnsNames, columnValues));
-        for (Field declaredField : declaredFields) {
-            declaredField.setAccessible(true);
-            preparedStatement.setObject(1, declaredField.get(user));
-        }
+        session.save(vehicleType);
+
+        session.getTransaction().commit();
     }
+
+    @Test
+    void oneToMany() {
+        @Cleanup SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        User user = session.get(User.class, 1L);
+        System.out.println("");
+
+        session.getTransaction().commit();
+    }
+
+//    @Test
+//    void checkGetReflectionApi() throws SQLException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchFieldException {
+//        PreparedStatement preparedStatement = null;
+//        ResultSet resultSet = preparedStatement.executeQuery();
+//        resultSet.getLong("id");
+//        resultSet.getString("first_name");
+//        resultSet.getString("last_name");
+//        resultSet.getDate("birthday").toLocalDate();
+//        resultSet.getString("image");
+//        resultSet.getString("country");
+//        resultSet.getString("city");
+//        resultSet.getString("phone");
+//        resultSet.getString("email");
+//        resultSet.getString("password");
+//        Role.valueOf(resultSet.getString("role"));
+//        Gender.valueOf(resultSet.getString("gender"));
+//
+//        Class<User> clazz = User.class;
+//
+//        Constructor<User> constructor = clazz.getConstructor();
+//        User user = constructor.newInstance();
+//        Field firstNameField = clazz.getDeclaredField("firstName");
+//        firstNameField.setAccessible(true);
+//        firstNameField.set(user, resultSet.getString("first_name"));
+//    }
+
+//    @Test
+//    void checkReflectionApi() throws SQLException, IllegalAccessException {
+//        User user = User.builder()
+//                .firstName("FirstName")
+//                .lastName("LastName")
+//                .birthday(new Birthday(LocalDate.of(2000, 1, 20)))
+//                .image("")
+//                .country("Belarus")
+//                .city("Brest")
+//                .phone("375292901210")
+//                .email("firstname@mail.ru")
+//                .password("password")
+//                .role(Role.valueOf("USER"))
+//                .gender(Gender.valueOf("MALE"))
+//                .build();
+//
+//        String sql = "" +
+//                "INSERT INTO " +
+//                "%s " +
+//                "(%s) " +
+//                "VALUES (%s)";
+//
+//        String tableName = ofNullable(user.getClass().getAnnotation(Table.class))
+//                .map(tableAnnotation -> tableAnnotation.schema() + "." + tableAnnotation.name())
+//                .orElse(user.getClass().getName());
+//
+//        Field[] declaredFields = user.getClass().getDeclaredFields();
+//
+//        String columnsNames = Arrays.stream(declaredFields)
+//                .map(field -> ofNullable(field.getAnnotation(Column.class))
+//                        .map(Column::name)
+//                        .orElse(field.getName()))
+//                .collect(joining(", "));
+//
+//        String columnValues = Arrays.stream(declaredFields)
+//                .map(field -> "?")
+//                .collect(joining(", "));
+//
+//        System.out.println(format(sql, tableName, columnsNames, columnValues));
+//
+//        Connection connection = null;
+//        PreparedStatement preparedStatement = connection.prepareStatement(format(sql, tableName, columnsNames, columnValues));
+//        for (Field declaredField : declaredFields) {
+//            declaredField.setAccessible(true);
+//            preparedStatement.setObject(1, declaredField.get(user));
+//        }
+//    }
 }
