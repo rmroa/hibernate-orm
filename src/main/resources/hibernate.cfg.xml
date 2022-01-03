@@ -18,6 +18,7 @@
         <mapping class="com.rm.entity.VehicleType"/>
         <mapping class="com.rm.entity.Model"/>
         <mapping class="com.rm.entity.Discount"/>
+        <mapping class="com.rm.entity.Profile"/>
         <!-- DB schema will be updated if needed -->
         <!-- <property name="hibernate.hbm2ddl.auto">update</property> -->
     </session-factory>
