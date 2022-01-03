@@ -10,6 +10,7 @@ import com.rm.entity.Manufacturer;
 import com.rm.entity.Model;
 import com.rm.entity.Order;
 import com.rm.entity.PersonalInfo;
+import com.rm.entity.Profile;
 import com.rm.entity.Role;
 import com.rm.entity.Transmission;
 import com.rm.entity.User;
@@ -26,6 +27,40 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 class HibernateRunnerTest {
+
+    @Test
+    void checkOneToOne() {
+        try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+             Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            User user = User.builder()
+                    .personalInfo(PersonalInfo.builder()
+                            .firstName("NewName")
+                            .lastName("NewLastName")
+                            .birthday(new Birthday(LocalDate.of(2000, 1, 20)))
+                            .image("")
+                            .country("Belarus")
+                            .city("Brest")
+                            .phone("375297456312")
+                            .email("newname@mail.ru")
+                            .password("password")
+                            .gender(Gender.MALE)
+                            .build())
+                    .role(Role.CUSTOMER)
+                    .build();
+
+            Profile profile = Profile.builder()
+                    .street("NewStreet")
+                    .language("ru")
+                    .build();
+
+            session.save(user);
+            profile.setUser(user);
+
+            session.getTransaction().commit();
+        }
+    }
 
     @Test
     void checkOrphanRemoval() {
