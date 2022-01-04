@@ -1,6 +1,7 @@
 package com.rm;
 
 import com.rm.entity.Birthday;
+import com.rm.entity.Chat;
 import com.rm.entity.Discount;
 import com.rm.entity.DiscountInfo;
 import com.rm.entity.DriveUnit;
@@ -27,6 +28,26 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 class HibernateRunnerTest {
+
+    @Test
+    void checkManyToMany() {
+        try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+             Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            User user = session.get(User.class, 1L);
+//            user.getChats().clear();
+
+            Chat chat = Chat.builder()
+                    .name("NewChat")
+                    .build();
+
+            user.addChat(chat);
+            session.save(chat);
+
+            session.getTransaction().commit();
+        }
+    }
 
     @Test
     void checkOneToOne() {
