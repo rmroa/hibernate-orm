@@ -55,8 +55,8 @@ class HibernateRunnerTest {
                     .language("ru")
                     .build();
 
-            session.save(user);
             profile.setUser(user);
+            session.save(user);
 
             session.getTransaction().commit();
         }
