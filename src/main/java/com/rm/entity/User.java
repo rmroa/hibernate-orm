@@ -16,6 +16,9 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -28,7 +31,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = "orders")
-@ToString(exclude = {"orders", "profile"})
+@ToString(exclude = {"orders", "profile", "chats"})
 @Builder
 @Entity
 @Table(name = "users")
@@ -56,5 +59,19 @@ public class User {
     public void addOrder(Order order) {
         orders.add(order);
         order.setUser(this);
+    }
+
+    @Builder.Default
+    @ManyToMany
+    @JoinTable(
+            name = "users_chat",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "chat_id")
+    )
+    private Set<Chat> chats = new HashSet<>();
+
+    public void addChat(Chat chat) {
+        chats.add(chat);
+        chat.getUsers().add(this);
     }
 }

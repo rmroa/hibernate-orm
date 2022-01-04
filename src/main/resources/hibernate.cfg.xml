@@ -19,6 +19,7 @@
         <mapping class="com.rm.entity.Model"/>
         <mapping class="com.rm.entity.Discount"/>
         <mapping class="com.rm.entity.Profile"/>
+        <mapping class="com.rm.entity.Chat"/>
         <!-- DB schema will be updated if needed -->
         <!-- <property name="hibernate.hbm2ddl.auto">update</property> -->
     </session-factory>
