@@ -15,6 +15,7 @@ import com.rm.entity.Profile;
 import com.rm.entity.Role;
 import com.rm.entity.Transmission;
 import com.rm.entity.User;
+import com.rm.entity.UserChat;
 import com.rm.entity.VehicleType;
 import com.rm.util.HibernateUtil;
 import lombok.Cleanup;
@@ -23,6 +24,7 @@ import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -36,14 +38,15 @@ class HibernateRunnerTest {
             session.beginTransaction();
 
             User user = session.get(User.class, 1L);
-//            user.getChats().clear();
-
-            Chat chat = Chat.builder()
-                    .name("NewChat")
+            Chat chat = session.get(Chat.class, 1L);
+            UserChat userChat = UserChat.builder()
+                    .createdAt(Instant.now())
+                    .createdBy(user.getPersonalInfo().getFirstName())
                     .build();
+            userChat.setUser(user);
+            userChat.setChat(chat);
 
-            user.addChat(chat);
-            session.save(chat);
+            session.save(userChat);
 
             session.getTransaction().commit();
         }
