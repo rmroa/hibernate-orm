@@ -5,11 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import java.time.Instant;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -18,22 +20,33 @@ import static javax.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @Builder
 @Entity
-public class Profile {
+@Table(name = "users_chat")
+public class UserChat {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne
     private User user;
 
-    private String street;
+    @ManyToOne
+    private Chat chat;
 
-    private String language;
+    @Column(name = "created_at")
+    private Instant createdAt;
+
+    @Column(name = "created_by")
+    private String createdBy;
 
     public void setUser(User user) {
-        user.setProfile(this);
         this.user = user;
+        this.user.getUserChats().add(this);
     }
+
+    public void setChat(Chat chat) {
+        this.chat = chat;
+        this.chat.getUserChats().add(this);
+    }
+
 }
