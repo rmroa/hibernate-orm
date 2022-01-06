@@ -7,6 +7,7 @@ import com.rm.entity.DiscountInfo;
 import com.rm.entity.DriveUnit;
 import com.rm.entity.EngineType;
 import com.rm.entity.Gender;
+import com.rm.entity.LocaleInfo;
 import com.rm.entity.Manufacturer;
 import com.rm.entity.Model;
 import com.rm.entity.Order;
@@ -27,9 +28,23 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 class HibernateRunnerTest {
+
+    @Test
+    void localeInfo() {
+        try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+             Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            Manufacturer manufacturer = session.get(Manufacturer.class, 1);
+            manufacturer.getLocales().add(LocaleInfo.of("ru", "Описание на русском"));
+            manufacturer.getLocales().add(LocaleInfo.of("en", "English description"));
+
+            session.getTransaction().commit();
+        }
+    }
 
     @Test
     void checkManyToMany() {
@@ -111,7 +126,7 @@ class HibernateRunnerTest {
 
             session.getTransaction().commit();
         }
-        Set<Order> orders = user.getOrders();
+        List<Order> orders = user.getOrders();
         System.out.println(orders.size());
     }
 
