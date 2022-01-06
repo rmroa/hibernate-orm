@@ -8,13 +8,15 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -38,7 +40,16 @@ public class Manufacturer {
 
     @Builder.Default
     @OneToMany(mappedBy = "manufacturer", cascade = CascadeType.ALL)
-    private Set<Model> models = new HashSet<>();
+    private List<Model> models = new ArrayList<>();
+
+    @Builder.Default
+    @ElementCollection
+    @CollectionTable(name = "manufacturer_locale")
+//    @AttributeOverride(name = "lang", column = @Column(name = "language"))
+    private List<LocaleInfo> locales = new ArrayList<>();
+
+//    @Column(name = "description")
+//    private List<String> locales = new ArrayList<>(); // только на чтение
 
     public void addModel(Model model) {
         models.add(model);

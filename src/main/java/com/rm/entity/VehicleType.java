@@ -13,8 +13,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -36,7 +36,7 @@ public class VehicleType {
 
     @Builder.Default
     @OneToMany(mappedBy = "vehicleType", cascade = CascadeType.ALL)
-    private Set<Model> models = new HashSet<>();
+    private List<Model> models = new ArrayList<>();
 
     public void addModel(Model model) {
         models.add(model);

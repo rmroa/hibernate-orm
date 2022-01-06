@@ -48,5 +48,4 @@ public class UserChat {
         this.chat = chat;
         this.chat.getUserChats().add(this);
     }
-
 }

@@ -20,8 +20,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -74,7 +74,7 @@ public class Model {
 
     @Builder.Default
     @OneToMany(mappedBy = "model")
-    private Set<Order> orders = new HashSet<>();
+    private List<Order> orders = new ArrayList<>();
 
     public void addOrder(Order order) {
         orders.add(order);
