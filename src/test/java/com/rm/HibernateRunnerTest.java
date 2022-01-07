@@ -33,6 +33,20 @@ import java.util.List;
 class HibernateRunnerTest {
 
     @Test
+    void orderingCollection() {
+        try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+             Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            Manufacturer manufacturer = session.get(Manufacturer.class, 1);
+            manufacturer.getModels().forEach(System.out::println);
+
+            session.getTransaction().commit();
+        }
+    }
+
+
+    @Test
     void localeInfo() {
         try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
              Session session = sessionFactory.openSession()) {
