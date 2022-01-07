@@ -14,6 +14,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,13 +42,30 @@ public class Manufacturer {
 
     @Builder.Default
     @OneToMany(mappedBy = "manufacturer", cascade = CascadeType.ALL)
+//    @OrderBy(clause = "production_year")
+    @OrderBy("productionYear")
+    @OrderColumn
     private List<Model> models = new ArrayList<>();
+
+//    @Builder.Default
+//    @OneToMany(mappedBy = "manufacturer", cascade = CascadeType.ALL)
+//    @MapKey(name = "model")
+//    @SortNatural
+//    private Map<String, Model> models = new TreeMap<>();
 
     @Builder.Default
     @ElementCollection
     @CollectionTable(name = "manufacturer_locale")
 //    @AttributeOverride(name = "lang", column = @Column(name = "language"))
     private List<LocaleInfo> locales = new ArrayList<>();
+
+//    @Builder.Default
+//    @ElementCollection
+//    @CollectionTable(name = "manufacturer_locale")
+////    @AttributeOverride(name = "lang", column = @Column(name = "language"))
+//    @MapKeyColumn(name = "lang")
+//    @Column(name = "description")
+//    private Map<String, String> locales = new HashMap();
 
 //    @Column(name = "description")
 //    private List<String> locales = new ArrayList<>(); // только на чтение
@@ -55,4 +74,9 @@ public class Manufacturer {
         models.add(model);
         model.setManufacturer(this);
     }
+
+//    public void addModel(Model model) {
+//        models.put(model.getModel(), model);
+//        model.setManufacturer(this);
+//    }
 }
