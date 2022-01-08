@@ -33,6 +33,22 @@ import java.util.List;
 class HibernateRunnerTest {
 
     @Test
+    void checkH2() {
+        try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+             Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            Manufacturer manufacturer = Manufacturer.builder()
+                    .brand("NewBrand")
+                    .country("NewCountry")
+                    .build();
+            session.save(manufacturer);
+
+            session.getTransaction().commit();
+        }
+    }
+
+    @Test
     void orderingCollection() {
         try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
              Session session = sessionFactory.openSession()) {
@@ -44,7 +60,6 @@ class HibernateRunnerTest {
             session.getTransaction().commit();
         }
     }
-
 
     @Test
     void localeInfo() {
