@@ -18,6 +18,7 @@ import com.rm.entity.Transmission;
 import com.rm.entity.User;
 import com.rm.entity.UserChat;
 import com.rm.entity.VehicleType;
+import com.rm.util.HibernateTestUtil;
 import com.rm.util.HibernateUtil;
 import lombok.Cleanup;
 import org.hibernate.Session;
@@ -31,6 +32,22 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 class HibernateRunnerTest {
+
+    @Test
+    void testContainers() {
+        try (SessionFactory sessionFactory = HibernateTestUtil.buildSessionFactory();
+             Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+
+            Manufacturer manufacturer = Manufacturer.builder()
+                    .brand("NewBrand")
+                    .country("NewCountry")
+                    .build();
+            session.save(manufacturer);
+
+            session.getTransaction().commit();
+        }
+    }
 
     @Test
     void checkH2() {
