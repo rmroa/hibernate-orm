@@ -15,7 +15,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
-import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +43,7 @@ public class Manufacturer {
     @OneToMany(mappedBy = "manufacturer", cascade = CascadeType.ALL)
 //    @OrderBy(clause = "production_year")
     @OrderBy("productionYear")
-    @OrderColumn
+//    @OrderColumn
     private List<Model> models = new ArrayList<>();
 
 //    @Builder.Default

@@ -36,4 +36,9 @@ public class Chat {
     @Builder.Default
     @OneToMany(mappedBy = "chat")
     private List<UserChat> userChats = new ArrayList<>();
+
+    public void addUserChats(UserChat userChat) {
+        userChats.add(userChat);
+        userChat.setChat(this);
+    }
 }

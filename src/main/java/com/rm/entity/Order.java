@@ -14,6 +14,8 @@ import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,7 +25,7 @@ import java.time.LocalDateTime;
 public class Order {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     private Integer id;
 
     @ManyToOne
