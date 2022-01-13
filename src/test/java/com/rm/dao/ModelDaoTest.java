@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+import javax.persistence.Tuple;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -160,13 +161,13 @@ public class ModelDaoTest {
         double priceFirst = 70.700;
         double priceThird = 66.300;
 
-        List<Object[]> results = modelDao.isItPossible(session);
+        List<Tuple> results = modelDao.isItPossible(session);
         assertThat(results).hasSize(2);
 
-        List<String> models = results.stream().map(e -> ((Model) e[0]).getModel()).collect(toList());
+        List<String> models = results.stream().map(e -> (e.get(0, Model.class)).getModel()).collect(toList());
         assertThat(models).containsSequence("amgGt", "x6");
 
-        List<Double> prices = results.stream().map(e -> (Double) e[1]).collect(toList());
+        List<Double> prices = results.stream().map(e -> e.get(1, Double.class)).collect(toList());
         assertThat(prices).containsOnly(priceFirst, priceThird);
 
         session.getTransaction().commit();
