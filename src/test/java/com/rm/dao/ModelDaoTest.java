@@ -1,5 +1,6 @@
 package com.rm.dao;
 
+import com.querydsl.core.Tuple;
 import com.rm.entity.Discount;
 import com.rm.entity.DiscountInfo;
 import com.rm.entity.Model;
@@ -13,7 +14,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import javax.persistence.Tuple;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -138,16 +138,16 @@ public class ModelDaoTest {
         double discountSecond = 15;
         double discountThird = 25;
 
-        List<Object[]> results = modelDao.findManufacturerAndModelsWithAvgModelCostAndDiscount(session);
+        List<Tuple> results = modelDao.findManufacturerAndModelsWithAvgModelCostAndDiscount(session);
         assertThat(results).hasSize(3);
 
-        List<String> manufacturers = results.stream().map(a -> (String) a[0]).collect(toList());
+        List<String> manufacturers = results.stream().map(a -> a.get(0, String.class)).collect(toList());
         assertThat(manufacturers).containsSequence("audi", "bmw", "mercedes");
 
-        List<Double> prices = results.stream().map(a -> (Double) a[1]).collect(toList());
+        List<Double> prices = results.stream().map(a -> a.get(1, Double.class)).collect(toList());
         assertThat(prices).contains(priceFirst, priceSecond, priceThird);
 
-        List<Double> discounts = results.stream().map(a -> (Double) a[2]).collect(toList());
+        List<Double> discounts = results.stream().map(a -> a.get(2, Double.class)).collect(toList());
         assertThat(discounts).contains(discountFirst, discountSecond, discountThird);
 
         session.getTransaction().commit();
@@ -164,11 +164,11 @@ public class ModelDaoTest {
         List<Tuple> results = modelDao.isItPossible(session);
         assertThat(results).hasSize(2);
 
-        List<String> models = results.stream().map(e -> (e.get(0, Model.class)).getModel()).collect(toList());
+        List<String> models = results.stream().map(e -> e.get(0, Model.class).getModel()).collect(toList());
         assertThat(models).containsSequence("amgGt", "x6");
 
-        List<Double> prices = results.stream().map(e -> e.get(1, Double.class)).collect(toList());
-        assertThat(prices).containsOnly(priceFirst, priceThird);
+        List<Double> prices = results.stream().map(a -> a.get(1, Double.class)).collect(toList());
+        assertThat(prices).contains(priceFirst, priceThird);
 
         session.getTransaction().commit();
     }
