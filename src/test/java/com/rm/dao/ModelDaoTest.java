@@ -1,6 +1,7 @@
 package com.rm.dao;
 
 import com.querydsl.core.Tuple;
+import com.rm.dto.ModelFilter;
 import com.rm.entity.Discount;
 import com.rm.entity.DiscountInfo;
 import com.rm.entity.Model;
@@ -114,9 +115,12 @@ public class ModelDaoTest {
         @Cleanup Session session = sessionFactory.openSession();
         session.beginTransaction();
 
-        String brand = "bmw";
-        String vehicleType = "crossover";
-        List<Model> models = modelDao.findModelsByVehicleTypeAndManufacturer(session, vehicleType, brand);
+        ModelFilter modelFilter = ModelFilter.builder()
+                .vehicleType("crossover")
+                .brand("bmw")
+                .build();
+
+        List<Model> models = modelDao.findModelsByVehicleTypeAndManufacturer(session, modelFilter);
         assertThat(models).hasSize(1);
 
         List<String> modelList = models.stream().map(Model::getModel).collect(toList());
