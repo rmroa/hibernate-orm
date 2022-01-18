@@ -1,7 +1,9 @@
 package com.rm.dao;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQuery;
+import com.rm.dto.ModelFilter;
 import com.rm.entity.Discount;
 import com.rm.entity.Model;
 import lombok.NoArgsConstructor;
@@ -180,7 +182,7 @@ public class ModelDao {
     /**
      * Возвращает список моделей, принадлежащх соответствующему типу транспортного средства и производителю
      */
-    public List<Model> findModelsByVehicleTypeAndManufacturer(Session session, String vehicleTypeName, String brand) {
+    public List<Model> findModelsByVehicleTypeAndManufacturer(Session session, ModelFilter modelFilter) {
 //        return session.createQuery("" +
 //                        "select m from VehicleType v " +
 //                        "join v.models m " +
@@ -212,15 +214,18 @@ public class ModelDao {
 //        return session.createQuery(criteria)
 //                .list();
 
+        Predicate predicate = QPredicate.builder()
+                .add(modelFilter.getVehicleType(), vehicleType.type::eq)
+                .add(modelFilter.getBrand(), manufacturer.brand::eq)
+                .buildAnd();
+
         return new JPAQuery<Model>(session)
                 .select(model1)
                 .from(vehicleType)
                 .join(vehicleType.models, model1)
                 .join(model1.manufacturer, manufacturer)
-                .where(vehicleType.type.eq(vehicleTypeName)
-                        .and(manufacturer.brand.eq(brand)))
+                .where(predicate)
                 .fetch();
-
     }
 
     /**
