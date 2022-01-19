@@ -16,6 +16,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -24,6 +25,9 @@ import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+@NamedQuery(name = "findUserByNameAndCostOrder", query = "select u from User u " +
+        "join u.orders o " +
+        "where u.personalInfo.firstName = :firstName and o.cost > :cost")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
