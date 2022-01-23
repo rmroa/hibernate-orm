@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.FetchProfile;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -26,6 +28,14 @@ import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+@FetchProfile(name = "withManufacturerAndOrders", fetchOverrides = {
+        @FetchProfile.FetchOverride(
+                entity = Model.class, association = "manufacturer", mode = FetchMode.JOIN
+        ),
+        @FetchProfile.FetchOverride(
+                entity = Model.class, association = "orders", mode = FetchMode.JOIN
+        )
+})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

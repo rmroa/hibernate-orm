@@ -14,15 +14,18 @@ public class HibernateRunner {
         try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory()) {
             Session session = sessionFactory.openSession();
             session.beginTransaction();
+            session.enableFetchProfile("withManufacturerAndOrders");
+//
+//            Model model = session.get(Model.class, 1L);
+//            System.out.println(model.getManufacturer().getBrand());
+//            System.out.println(model.getOrders().size());
 
             List<Model> models = session.createQuery("" +
-                            "select m from Model m " +
-                            "join fetch m.orders " +
-                            "join fetch m.manufacturer", Model.class)
+                            "select m from Model m", Model.class)
                     .list();
 
-            models.forEach(model -> System.out.println(model.getOrders().size()));
-            models.forEach(model -> System.out.println(model.getManufacturer().getBrand()));
+//            models.forEach(model -> System.out.println(model.getOrders().size()));
+//            models.forEach(model -> System.out.println(model.getManufacturer().getBrand()));
 
             session.getTransaction().commit();
         }
