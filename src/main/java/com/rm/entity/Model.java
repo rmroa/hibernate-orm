@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -75,7 +74,6 @@ public class Model {
     private Discount discount;
 
     @Builder.Default
-    @BatchSize(size = 3)
     @OneToMany(mappedBy = "model", cascade = CascadeType.ALL)
     private List<Order> orders = new ArrayList<>();
 

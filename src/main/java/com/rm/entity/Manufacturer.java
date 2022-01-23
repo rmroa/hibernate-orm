@@ -30,7 +30,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Builder
 @Entity
 @Table(name = "manufacturer")
-@BatchSize(size = 2)
 public class Manufacturer {
 
     @Id

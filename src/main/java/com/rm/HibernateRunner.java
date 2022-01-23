@@ -15,8 +15,12 @@ public class HibernateRunner {
             Session session = sessionFactory.openSession();
             session.beginTransaction();
 
-            List<Model> models = session.createQuery("select m from Model m", Model.class)
+            List<Model> models = session.createQuery("" +
+                            "select m from Model m " +
+                            "join fetch m.orders " +
+                            "join fetch m.manufacturer", Model.class)
                     .list();
+
             models.forEach(model -> System.out.println(model.getOrders().size()));
             models.forEach(model -> System.out.println(model.getManufacturer().getBrand()));
 

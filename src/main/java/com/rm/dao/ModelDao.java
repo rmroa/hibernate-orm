@@ -108,19 +108,18 @@ public class ModelDao {
                 .orderBy(model1.productionYear.asc())
                 .limit(2)
                 .fetch();
-
     }
 
     /**
      * Возвращает список моделей, выше определенной стоимости (в порядке возрастания)
      */
     public List<Model> findByPriceAndOrderedByPrice(Session session, BigDecimal modelPrice) {
-////        return session.createQuery("" +
-////                        "select m from Model m " +
-////                        "where m.price > :modelPrice " +
-////                        "order by m.price", Model.class)
-////                .setParameter("modelPrice", modelPrice)
-////                .list();
+//        return session.createQuery("" +
+//                        "select m from Model m " +
+//                        "where m.price > :modelPrice " +
+//                        "order by m.price", Model.class)
+//                .setParameter("modelPrice", modelPrice)
+//                .list();
 
 //        CriteriaBuilder cb = session.getCriteriaBuilder();
 //
@@ -147,13 +146,13 @@ public class ModelDao {
      * Возвращает список скидок по производителю, принадлежащих соответствующим моделям
      */
     public List<Discount> findAllDiscountsByManufacturer(Session session, String brand) {
-////        return session.createQuery("" +
-////                        "select d from Manufacturer mr " +
-////                        "join mr.models m " +
-////                        "join m.discount d " +
-////                        "where mr.brand = :brand", Discount.class)
-////                .setParameter("brand", brand)
-////                .list();
+//        return session.createQuery("" +
+//                        "select d from Manufacturer mr " +
+//                        "join mr.models m " +
+//                        "join m.discount d " +
+//                        "where mr.brand = :brand", Discount.class)
+//                .setParameter("brand", brand)
+//                .list();
 //
 //        CriteriaBuilder cb = session.getCriteriaBuilder();
 //
@@ -171,13 +170,12 @@ public class ModelDao {
 
         return new JPAQuery<Discount>(session)
                 .select(discount)
-                .from(manufacturer)
-                .join(manufacturer.models, model1)
-                .join(model1.discount, discount)
+                .from(discount)
+                .join(discount.models, model1)
+                .join(model1.manufacturer, manufacturer)
                 .where(manufacturer.brand.eq(brand))
                 .fetch();
     }
-//
 
     /**
      * Возвращает список моделей, принадлежащх соответствующему типу транспортного средства и производителю
@@ -221,9 +219,9 @@ public class ModelDao {
 
         return new JPAQuery<Model>(session)
                 .select(model1)
-                .from(vehicleType)
-                .join(vehicleType.models, model1)
-                .join(model1.manufacturer, manufacturer)
+                .from(model1)
+                .join(model1.vehicleType, vehicleType).fetchJoin()
+                .join(model1.manufacturer, manufacturer).fetchJoin()
                 .where(predicate)
                 .fetch();
     }
@@ -232,13 +230,13 @@ public class ModelDao {
      * Возвращает для каждого производителя: название, со средней стоимостью модели и размером скидки. Производители упорядочены по названию.
      */
     public List<Tuple> findManufacturerAndModelsWithAvgModelCostAndDiscount(Session session) {
-////        return session.createQuery("" +
-////                        "select mr.brand, avg(m.price), avg(d.discountInfo.amountOfDiscount) from Manufacturer mr " +
-////                        "join mr.models m " +
-////                        "join m.discount d " +
-////                        "group by mr.brand " +
-////                        "order by mr.brand", Object[].class)
-////                .list();
+//        return session.createQuery("" +
+//                        "select mr.brand, avg(m.price), avg(d.discountInfo.amountOfDiscount) from Manufacturer mr " +
+//                        "join mr.models m " +
+//                        "join m.discount d " +
+//                        "group by mr.brand " +
+//                        "order by mr.brand", Object[].class)
+//                .list();
 
 //        CriteriaBuilder cb = session.getCriteriaBuilder();
 //
