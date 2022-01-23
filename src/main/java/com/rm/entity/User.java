@@ -23,6 +23,7 @@ import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @NamedQuery(name = "findUserByNameAndCostOrder", query = "select u from User u " +
@@ -54,7 +55,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = LAZY)
     private Profile profile;
 
     public void addOrder(Order order) {

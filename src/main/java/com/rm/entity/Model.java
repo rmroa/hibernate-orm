@@ -19,6 +19,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.math.BigDecimal;
@@ -28,6 +31,14 @@ import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+@NamedEntityGraph(name = "withManufacturerAndUser", attributeNodes = {
+        @NamedAttributeNode("manufacturer"),
+        @NamedAttributeNode(value = "orders", subgraph = "orders"),
+},
+        subgraphs = {
+                @NamedSubgraph(name = "orders", attributeNodes = @NamedAttributeNode("user"))
+        }
+)
 @FetchProfile(name = "withManufacturerAndOrders", fetchOverrides = {
         @FetchProfile.FetchOverride(
                 entity = Model.class, association = "manufacturer", mode = FetchMode.JOIN
