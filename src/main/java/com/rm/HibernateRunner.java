@@ -6,7 +6,6 @@ import com.rm.util.TestDataImporter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
-import javax.persistence.LockModeType;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -24,10 +23,10 @@ public class HibernateRunner {
 
             TestDataImporter.importData(sessionFactory);
 
-            Model model = session.find(Model.class, 1L, LockModeType.OPTIMISTIC);
+            Model model = session.find(Model.class, 1L);
             model.setPrice(new BigDecimal("100.100"));
 
-            Model model1 = session1.find(Model.class, 1L, LockModeType.OPTIMISTIC);
+            Model model1 = session1.find(Model.class, 1L);
             model1.setPrice(new BigDecimal("100.100"));
 
             session.getTransaction().commit();
