@@ -24,7 +24,6 @@ import javax.persistence.NamedEntityGraph;
 import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -61,9 +60,6 @@ public class Model {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
-
-    @Version
-    private Long version;
 
     private String model;
 
