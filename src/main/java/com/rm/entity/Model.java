@@ -6,11 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.FetchProfile;
-import org.hibernate.annotations.OptimisticLockType;
-import org.hibernate.annotations.OptimisticLocking;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -27,6 +24,7 @@ import javax.persistence.NamedEntityGraph;
 import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -58,17 +56,14 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Builder
 @Entity
 @Table(name = "models")
-@OptimisticLocking(type = OptimisticLockType.ALL)
-//@OptimisticLocking(type = OptimisticLockType.DIRTY)
-@DynamicUpdate
 public class Model {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-//    @Version
-//    private Long version;
+    @Version
+    private Long version;
 
     private String model;
 
