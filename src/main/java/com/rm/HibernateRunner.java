@@ -1,6 +1,8 @@
 package com.rm;
 
 import com.rm.entity.Model;
+import com.rm.entity.Profile;
+import com.rm.entity.User;
 import com.rm.util.HibernateUtil;
 import com.rm.util.TestDataImporter;
 import org.hibernate.Session;
@@ -17,23 +19,30 @@ public class HibernateRunner {
         try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory()) {
             Session session = sessionFactory.openSession();
             TestDataImporter.importData(sessionFactory);
+//            session.doWork(connection -> connection.setAutoCommit(false));
 
-//            session.setDefaultReadOnly(true);
-            session.beginTransaction();
+//            session.beginTransaction();
 
-            session.createNativeQuery("SET TRANSACTION READ ONLY;").executeUpdate();
+            Profile profile = Profile.builder()
+                    .user(session.find(User.class, 1L))
+                    .language("ru")
+                    .street("street")
+                    .build();
 
-//            session.createQuery("select m from Model m", Model.class)
+            session.save(profile);
+
+
+            session.createQuery("select m from Model m", Model.class)
 //                    .setLockMode(LockModeType.PESSIMISTIC_READ)
 //                    .setHint("javax.persistence.lock.timeout", 5000)
 //                    .setReadOnly(true)
-//                    .list();
+                    .list();
 
 
             Model model = session.find(Model.class, 1L);
             model.setPrice(new BigDecimal("1090.100"));
 
-            session.getTransaction().commit();
+//            session.getTransaction().commit();
         }
     }
 }
