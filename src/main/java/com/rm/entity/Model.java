@@ -50,12 +50,12 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = "orders")
+@EqualsAndHashCode(exclude = "orders", callSuper = false)
 @ToString(exclude = "orders")
 @Builder
 @Entity
 @Table(name = "models")
-public class Model {
+public class Model extends AuditableEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
