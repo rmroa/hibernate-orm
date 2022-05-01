@@ -1,13 +1,12 @@
 package com.rm;
 
-import com.rm.entity.Model;
+import com.rm.entity.UserChat;
 import com.rm.util.HibernateUtil;
 import com.rm.util.TestDataImporter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
 import java.sql.SQLException;
 
 public class HibernateRunner {
@@ -20,8 +19,10 @@ public class HibernateRunner {
 
             session.beginTransaction();
 
-            Model model = session.find(Model.class, 1L);
-            model.setPrice(new BigDecimal("1090.100"));
+            UserChat userChat = session.find(UserChat.class, 1L);
+
+//            Model model = session.find(Model.class, 1L);
+//            model.setPrice(new BigDecimal("1090.100"));
 
             session.getTransaction().commit();
         }
