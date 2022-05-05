@@ -28,15 +28,15 @@ public class TestDataImporter {
         Manufacturer bmw = saveManufacturer(session, "bmw");
         Manufacturer audi = saveManufacturer(session, "audi");
         Manufacturer mercedes = saveManufacturer(session, "mercedes");
-//
+
         VehicleType crossover = saveVehicleType(session, "crossover");
         VehicleType hatchback = saveVehicleType(session, "hatchback");
         VehicleType coupe = saveVehicleType(session, "coupe");
-//
+
         Discount five = saveDiscount(session, 5);
         Discount fifteen = saveDiscount(session, 15);
         Discount twentyFive = saveDiscount(session, 25);
-//
+
         Model x6 = saveModel(session, crossover, bmw, "x6", new BigDecimal("70.700"), LocalDate.of(2019, 1, 12), five);
         Model a6 = saveModel(session, coupe, audi, "a6", new BigDecimal("50.100"), LocalDate.of(2018, 3, 12), fifteen);
         Model amgGt = saveModel(session, hatchback, mercedes, "amgGt", new BigDecimal("66.300"), LocalDate.of(201, 9, 13), twentyFive);

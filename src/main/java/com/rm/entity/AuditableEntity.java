@@ -1,6 +1,6 @@
 package com.rm.entity;
 
-import com.rm.listener.AuditListener;
+import com.rm.listener.AuditDatesListener;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +13,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @MappedSuperclass
-@EntityListeners(AuditListener.class)
+@EntityListeners(AuditDatesListener.class)
 public abstract class AuditableEntity<T extends Serializable> implements BaseEntity<T> {
 
     @Column(name = "created_at")

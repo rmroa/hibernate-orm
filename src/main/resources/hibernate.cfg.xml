@@ -15,6 +15,7 @@
         <!--        <property name="hibernate.connection.isolation">8</property>-->
 
         <mapping class="com.rm.entity.User"/>
+        <mapping class="com.rm.entity.Audit"/>
         <mapping class="com.rm.entity.Order"/>
         <mapping class="com.rm.entity.Manufacturer"/>
         <mapping class="com.rm.entity.VehicleType"/>
