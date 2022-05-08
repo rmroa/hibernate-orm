@@ -1,6 +1,7 @@
 package com.rm;
 
-import com.rm.entity.UserChat;
+import com.rm.entity.Model;
+import com.rm.interceptor.GlobalInterceptor;
 import com.rm.util.HibernateUtil;
 import com.rm.util.TestDataImporter;
 import org.hibernate.Session;
@@ -14,15 +15,15 @@ public class HibernateRunner {
     @Transactional
     public static void main(String[] args) throws SQLException {
         try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
-             Session session = sessionFactory.openSession()) {
+             Session session = sessionFactory
+                     .withOptions()
+                     .interceptor(new GlobalInterceptor())
+                     .openSession()) {
             TestDataImporter.importData(sessionFactory);
 
             session.beginTransaction();
 
-            UserChat userChat = session.find(UserChat.class, 1L);
-
-//            Model model = session.find(Model.class, 1L);
-//            model.setPrice(new BigDecimal("1090.100"));
+            Model model = session.find(Model.class, 1L);
 
             session.getTransaction().commit();
         }

@@ -1,5 +1,6 @@
 package com.rm.util;
 
+import com.rm.interceptor.GlobalInterceptor;
 import com.rm.listener.AuditTableListener;
 import lombok.experimental.UtilityClass;
 import org.hibernate.SessionFactory;
@@ -30,10 +31,12 @@ public class HibernateUtil {
     }
 
     public static Configuration buildConfiguration() {
+        Configuration configuration = new Configuration();
 //        configuration.addAnnotatedClass(User.class); // аналог <mapping class="com.rm.entity.User"/>
 //        configuration.setPhysicalNamingStrategy(new CamelCaseToUnderscoresNamingStrategy()); // аналог @Column(name = "...")
 //        configuration.addAttributeConverter(new BirthdayConverter(), true); // аналог @Convert(converter = BirthdayConverter.class)
 //        configuration.registerTypeOverride(new JsonBinaryType()); // регистрация JsonBinaryType для поля "private String info";
-        return new Configuration();
+        configuration.setInterceptor(new GlobalInterceptor());
+        return configuration;
     }
 }
