@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.FetchProfile;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -55,6 +57,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Builder
 @Entity
 @Table(name = "models")
+@Audited
 public class Model extends AuditableEntity<Long> {
 
     @Id
@@ -63,6 +66,7 @@ public class Model extends AuditableEntity<Long> {
 
     private String model;
 
+    @NotAudited
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manufacturer_id")
     private Manufacturer manufacturer;
@@ -70,6 +74,7 @@ public class Model extends AuditableEntity<Long> {
     @Column(name = "production_year")
     private LocalDate productionYear;
 
+    @NotAudited
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_type_id")
     private VehicleType vehicleType;
@@ -90,10 +95,12 @@ public class Model extends AuditableEntity<Long> {
 
     private BigDecimal price;
 
+    @NotAudited
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "discount_id")
     private Discount discount;
 
+    @NotAudited
     @Builder.Default
     @OneToMany(mappedBy = "model", cascade = CascadeType.ALL)
     private List<Order> orders = new ArrayList<>();
