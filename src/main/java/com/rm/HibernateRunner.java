@@ -15,10 +15,25 @@ public class HibernateRunner {
         try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory()) {
 //            TestDataImporter.importData(sessionFactory);
 
+            Model model = null;
+
             try (Session session = sessionFactory.openSession()) {
                 session.beginTransaction();
 
-                Model model = session.find(Model.class, 1L);
+                model = session.find(Model.class, 1L);
+                model.getManufacturer().getBrand();
+                model.getOrders().size();
+                Model model1 = session.find(Model.class, 1L);
+
+                session.getTransaction().commit();
+            }
+
+            try (Session session = sessionFactory.openSession()) {
+                session.beginTransaction();
+
+                Model model2 = session.find(Model.class, 1L);
+                model2.getManufacturer().getBrand();
+                model2.getOrders().size();
 
                 session.getTransaction().commit();
             }

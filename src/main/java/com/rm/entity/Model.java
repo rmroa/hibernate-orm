@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.FetchProfile;
 import org.hibernate.envers.Audited;
@@ -16,7 +18,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -31,6 +32,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @NamedEntityGraph(name = "withManufacturerAndUser", attributeNodes = {
@@ -58,6 +60,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name = "models")
 @Audited
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Models")
 public class Model extends AuditableEntity<Long> {
 
     @Id
@@ -67,7 +70,7 @@ public class Model extends AuditableEntity<Long> {
     private String model;
 
     @NotAudited
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "manufacturer_id")
     private Manufacturer manufacturer;
 
@@ -75,7 +78,7 @@ public class Model extends AuditableEntity<Long> {
     private LocalDate productionYear;
 
     @NotAudited
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "vehicle_type_id")
     private VehicleType vehicleType;
 
@@ -96,7 +99,7 @@ public class Model extends AuditableEntity<Long> {
     private BigDecimal price;
 
     @NotAudited
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "discount_id")
     private Discount discount;
 
