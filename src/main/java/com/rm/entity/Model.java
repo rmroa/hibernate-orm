@@ -60,7 +60,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name = "models")
 @Audited
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Models")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Model extends AuditableEntity<Long> {
 
     @Id
