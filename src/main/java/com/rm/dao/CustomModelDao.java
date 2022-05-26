@@ -19,11 +19,11 @@ import static com.rm.entity.QVehicleType.vehicleType;
 import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
-public class ModelDao {
+public class CustomModelDao {
 
-    private static final ModelDao INSTANCE = new ModelDao();
+    private static final CustomModelDao INSTANCE = new CustomModelDao();
 
-    public static ModelDao getInstance() {
+    public static CustomModelDao getInstance() {
         return INSTANCE;
     }
 
