@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import javax.transaction.Transactional;
+import java.lang.reflect.Proxy;
 import java.sql.SQLException;
 
 public class HibernateRunner {
@@ -14,14 +15,15 @@ public class HibernateRunner {
     public static void main(String[] args) throws SQLException {
         try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory()) {
 
-            try (Session session = sessionFactory.openSession()) {
-                session.beginTransaction();
+            Session session = (Session) Proxy.newProxyInstance(SessionFactory.class.getClassLoader(), new Class[]{Session.class},
+                    (proxy, method, args1) -> method.invoke(sessionFactory.getCurrentSession(), args1));
 
-                ModelRepository modelRepository = new ModelRepository(sessionFactory);
-                modelRepository.findById(1L).ifPresent(System.out::println);
+            session.beginTransaction();
 
-                session.getTransaction().commit();
-            }
+            ModelRepository modelRepository = new ModelRepository(session);
+            modelRepository.findById(1L).ifPresent(System.out::println);
+
+            session.getTransaction().commit();
         }
     }
 }
