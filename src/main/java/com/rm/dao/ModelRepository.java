@@ -8,7 +8,5 @@ public class ModelRepository extends BaseRepository<Long, Model> {
 
     public ModelRepository(EntityManager entityManager) {
         super(Model.class, entityManager);
-
     }
-
 }

@@ -26,7 +26,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Builder
 @Entity
 @Table(name = "vehicle_type")
-public class VehicleType {
+public class VehicleType implements BaseEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

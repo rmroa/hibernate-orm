@@ -1,18 +1,22 @@
 package com.rm.dao;
 
 import com.rm.entity.BaseEntity;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaQuery;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
 public abstract class BaseRepository<K extends Serializable, E extends BaseEntity<K>> implements Repository<K, E> {
 
     private final Class<E> clazz;
+
+    @Getter
     private final EntityManager entityManager;
 
     @Override
@@ -23,7 +27,7 @@ public abstract class BaseRepository<K extends Serializable, E extends BaseEntit
 
     @Override
     public void delete(K id) {
-        entityManager.remove(id);
+        entityManager.remove(entityManager.find(clazz, id));
         entityManager.flush();
     }
 
@@ -33,8 +37,8 @@ public abstract class BaseRepository<K extends Serializable, E extends BaseEntit
     }
 
     @Override
-    public Optional<E> findById(K id) {
-        return Optional.ofNullable(entityManager.find(clazz, 1L));
+    public Optional<E> findById(K id, Map<String, Object> properties) {
+        return Optional.ofNullable(entityManager.find(clazz, id, properties));
     }
 
     @Override

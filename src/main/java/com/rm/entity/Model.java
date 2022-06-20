@@ -35,6 +35,10 @@ import java.util.List;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
+@NamedEntityGraph(name = "withManufacturer", attributeNodes = {
+        @NamedAttributeNode("manufacturer")
+}
+)
 @NamedEntityGraph(name = "withManufacturerAndUser", attributeNodes = {
         @NamedAttributeNode("manufacturer"),
         @NamedAttributeNode(value = "orders", subgraph = "orders"),

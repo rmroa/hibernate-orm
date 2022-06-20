@@ -32,7 +32,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name = "manufacturer")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Manufacturers")
-public class Manufacturer {
+public class Manufacturer implements BaseEntity<Integer> {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
