@@ -64,17 +64,18 @@ public class HibernateRunner {
 
 //            modelService.findById(1L).ifPresent(System.out::println);
 
-            ModelCreateDto modelCreateDto = new ModelCreateDto(
-                    "NewCreateModel",
-                    3,
-                    LocalDate.of(2000, 1, 1),
-                    3L,
-                    Transmission.AUTOMATIC,
-                    DriveUnit.FRONT,
-                    EngineType.PETROL,
-                    100L,
-                    new BigDecimal("27.000")
-            );
+            ModelCreateDto modelCreateDto = ModelCreateDto.builder()
+                    .model("NewCreateModel")
+                    .manufacturerId(3)
+                    .productionYear(LocalDate.of(2000, 1, 1))
+                    .vehicleTypeId(3L)
+                    .transmission(Transmission.AUTOMATIC)
+                    .driveUnit(DriveUnit.FRONT)
+                    .engineType(EngineType.PETROL)
+                    .currentMileage(100L)
+                    .price(new BigDecimal("27.000"))
+                    .build();
+
             modelService.create(modelCreateDto);
 
 //            session.getTransaction().commit();
